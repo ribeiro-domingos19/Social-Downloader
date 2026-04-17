@@ -1,0 +1,7 @@
+node_modules/
+.env
+npm-debug.log*
+yt-dlp
+temp/
+*.mp4
+*.mp3
