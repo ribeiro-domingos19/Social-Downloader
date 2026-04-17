@@ -56,8 +56,8 @@ app.get('/api/proxy-download', async (req, res) => {
 
         const flags = `--no-warnings --no-check-certificate --socket-timeout 15 --no-playlist`;
         const cleanUrl = url.split(' ')[0].trim();
-        const command = `yt-dlp "${cleanUrl}" ${format} ${flags} -o "${tmpTemplate}"`;
-
+	const ytDlpPath = fs.existsSync(path.join(__dirname, 'yt-dlp')) ? './yt-dlp' : 'yt-dlp';
+	const command = `${ytDlpPath} "${cleanUrl}" -j ${format} ${flags}`;
         console.log("=== PROXY-DOWNLOAD (yt-dlp) ===");
         console.log("Comando:", command);
 
