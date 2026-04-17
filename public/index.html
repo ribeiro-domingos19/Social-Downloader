@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Poppins:wght@700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <title>Social Downloader</title>
+</head>
+<body>
+
+<header class="header">
+  <button class="menu-btn"><i class="bi bi-list"></i></button>
+  <div class="logo"><a href="#">SocialDL</a></div>
+</header>
+
+<nav class="menu">
+  <ul>
+	  <li><a href="#">Início</a></li>
+	  <li><a href="#como-funciona">Como funciona</a></li>
+	  <li><a href="#faq">FAQ</a></li>
+  </ul>
+</nav>
+
+<section class="container-main">
+  <h1 class="social">
+    <i id="social-icon" class="bi bi-facebook"></i>
+    <span id="social-text">Baixar vídeos do Facebook</span>
+  </h1>
+
+  <div class="switch facebook">
+    <div class="indicator"></div>
+    <button class="active">Facebook</button>
+    <button>Instagram</button>
+    <button>TikTok</button>
+  </div>
+
+  <div class="input-box">
+    <span class="icon"><i class="bi bi-link-45deg"></i></span>
+    <input type="text" id="video-url" placeholder="Cole o link aqui...">
+    <span class="icon right" id="paste-btn"><i class="bi bi-clipboard"></i></span>
+  </div>
+
+  <button class="download-btn" id="main-download">Baixar</button>
+
+  <!-- RESULTADO: Facebook / Instagram -->
+  <div id="result-container" style="display: none;">
+    <div class="preview-card">
+      <img id="thumb-img" src="" alt="Thumbnail">
+      <h3 id="res-title"></h3>
+    </div>
+    <div class="download-options">
+      <button id="btn-video" style="background: #7037e5; color: white;">Vídeo</button>
+      <button id="btn-audio">Áudio (MP3)</button>
+    </div>
+  </div>
+
+
+  <!-- RESULTADO: TikTok -->
+<div id="tiktok-options" style="display: none;">
+  <div class="preview-card">
+    <img id="thumb-tiktok" src="" alt="Thumbnail" style="display:none; width: 90%; height: 80%">
+    <h3 id="res-title-tiktok"></h3>
+  </div>
+  <div class="download-options">
+    <button id="btn-tiktok-wm" style="background: #7037e5; color: white;">Com Marca d'Água</button>
+    <button id="btn-tiktok-nowm">Sem Marca d'Água</button>
+  </div>
+  <div class="download-options" style="margin-top: 8px;">
+    <button id="btn-tiktok-audio">Áudio (MP3)</button>
+  </div>
+</div>
+
+</section>
+
+<section id="como-funciona" class="info-section">
+  <h2>Como funciona?</h2>
+  <div class="steps">
+    <div class="step"><span>1</span><p>Cole o link</p></div>
+    <div class="step"><span>2</span><p>Clique em baixar</p></div>
+    <div class="step"><span>3</span><p>Escolha o formato</p></div>
+  </div>
+</section>
+
+<section id="faq" class="faq">
+  <h2>Perguntas Frequentes</h2>
+  <div class="faq-item">
+    <h3>É gratuito?</h3>
+    <p>Sim, totalmente gratuito.</p>
+  </div>
+  <div class="faq-item">
+    <h3>Funciona em telemóvel?</h3>
+    <p>Sim, funciona em qualquer navegador de telemóvel.</p>
+  </div>
+</section>
+
+<footer class="footer">
+  <p>&copy; 2026 SocialDL - Todos os direitos reservados.</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
