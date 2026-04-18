@@ -167,6 +167,14 @@ app.post('/api/download', (req, res) => {
         } catch (e) { res.status(500).json({ success: false, error: "Erro no processamento" }); }
     });
 });
+app.get('/api/check', (req, res) => {
+    exec('yt-dlp --version && ffmpeg -version 2>&1 | head -1', (error, stdout, stderr) => {
+        res.json({
+            ytdlp: stdout || error?.message || "não encontrado",
+            stderr: stderr
+        });
+    });
+});
 
 // PORTA DINÂMICA PARA O RENDER
 const PORT = process.env.PORT || 3000;
