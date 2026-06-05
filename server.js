@@ -226,20 +226,67 @@ app.get('/api/proxy-download', async (req, res) => {
     }
 });
 
+/* Rota de download */
+
 app.get('/api/download-file', (req, res) => {
     const { url, name, isAudio, noWatermark } = req.query;
     dispararYtDlp(res, url, name, isAudio === 'true', noWatermark === 'true');
 });
 
+// ROTA: EXTRAÇÃO DE METADADOS
 app.post('/api/download', (req, res) => {
     const { url, isAudio, noWatermark } = req.body;
-    const command = `./yt-dlp "${url.split(' ')[0].trim()}" -j`;
-    exec(command, (error, stdout) => {
-        if (error) return res.status(500).json({ error: "Falha" });
-        const info = JSON.parse(stdout);
-        res.json({ success: true, title: info.title, url: info.url });
+    if (!url) return res.status(400).json({ success: false, error: "URL vazia" });
+
+    const cleanUrl = url.split(' ')[0].trim();
+    const cacheKey = `${isAudio ? 'audio' : 'video'}_${noWatermark ? 'nowm' : 'wm'}_${cleanUrl}`;
+    
+    if (downloadCache.has(cacheKey)) {
+        console.log("Cache hit!");
+        return res.json(downloadCache.get(cacheKey));
+    }
+
+    const flags = `--no-playlist --no-warnings --no-check-certificate --socket-timeout 10`;
+    let format;
+    
+    if (isAudio) {
+        format = `-f "bestaudio/best"`;
+    } else if (/tiktok\.com/i.test(cleanUrl) && noWatermark) {
+        format = `-f "download_addr-2/best[ext=mp4]/best"`;
+    } else {
+        format = `-f "best[height<=720][ext=mp4]/best[height<=720]/best"`;
+    }
+
+    const command = `./yt-dlp "${cleanUrl}" -j ${format} ${flags}`;
+    console.log("=== EXTRAÇÃO METADADOS ===");
+    console.log("Comando:", command);
+
+    exec(command, (error, stdout, stderr) => {
+        console.log("Erro:", error ? error.message : "nenhum");
+        console.log("stderr:", stderr);
+
+        if (error) return res.status(500).json({ success: false, error: "Falha na extração" });
+
+        try {
+            const info = JSON.parse(stdout);
+            const responseData = {
+                success: true,
+                title: info.title || "Vídeo",
+                thumbnail: info.thumbnail || "",
+                url: info.url,
+                suggestedName: `SocialDL_${Date.now().toString().slice(-4)}`
+            };
+            console.log("Extração OK:", responseData.title);
+            downloadCache.set(cacheKey, responseData);
+            setTimeout(() => downloadCache.delete(cacheKey), 600000);
+            res.json(responseData);
+        } catch (e) {
+            console.log("Erro JSON:", e.message);
+            res.status(500).json({ success: false, error: "Erro no processamento" });
+        }
     });
 });
+
 
 app.get('/api/check', (req, res) => {
     exec('./yt-dlp --version', (error, stdout) => { res.json({ resultado: stdout }); });
