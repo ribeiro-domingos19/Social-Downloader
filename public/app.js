@@ -21,7 +21,7 @@ pasteBtn.addEventListener("click", async () => {
   try {
     const text = await navigator.clipboard.readText();
     input.value = text;
-    detectarLink();
+    detectarEMudarRede(); // MODIFICADO: agora muda o switch automaticamente
   } catch (err) {
     console.error("Erro ao colar:", err);
   }
@@ -45,7 +45,9 @@ switchBtns.forEach((btn, index) => {
   btn.addEventListener('click', () => trocarRede(index, btn));
 });
 
-input.addEventListener("input", detectarLink);
+input.addEventListener("input", () => {
+  detectarEMudarRede(); // MODIFICADO: agora detecta e muda automaticamente
+});
 
 function redeAtiva() {
   const index = [...switchBtns].findIndex(btn => btn.classList.contains('active'));
@@ -66,6 +68,38 @@ function trocarRede(index, btn) {
   resultContainer.style.display = "none";
 
   detectarLink();
+}
+
+/**
+ * NOVO: Detecta a rede do link E muda o switch automaticamente
+ */
+function detectarEMudarRede() {
+  const url = input.value.trim();
+
+  if (!url) {
+    input.parentElement.style.boxShadow = "none";
+    return;
+  }
+
+  // Procurar qual rede o link pertence
+  let redeDetectada = null;
+  
+  for (const [nomeDaRede, dados] of Object.entries(redes)) {
+    if (dados.regex.test(url)) {
+      redeDetectada = nomeDaRede;
+      break;
+    }
+  }
+
+  // Se detectou uma rede, muda o switch para ela
+  if (redeDetectada) {
+    const index = nomesRedes.indexOf(redeDetectada);
+    const btn = switchBtns[index];
+    trocarRede(index, btn); // Muda o switch
+  } else {
+    // Se não detectou, só faz a validação visual
+    detectarLink();
+  }
 }
 
 function detectarLink() {
@@ -207,3 +241,4 @@ function dispararDownloadDireto(url, baseName, isAudio, noWatermark) {
   const ext = isAudio ? 'mp3' : 'mp4';
   window.location.href = `/api/download-file?url=${encodeURIComponent(url)}&name=${encodeURIComponent(baseName + '.' + ext)}&isAudio=${isAudio}&noWatermark=${noWatermark}`;
 }
+

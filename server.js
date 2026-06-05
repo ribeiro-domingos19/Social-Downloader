@@ -8,6 +8,18 @@ const app = express();
 app.use(express.json());
 app.use(express.static('public'));
 
+// Servir manifest.json com content-type correto
+app.get('/manifest.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/manifest+json');
+  res.sendFile(path.join(__dirname, 'public', 'manifest.json'));
+});
+
+// Servir service worker com content-type correto
+app.get('/sw.js', (req, res) => {
+  res.setHeader('Content-Type', 'application/javascript');
+  res.sendFile(path.join(__dirname, 'public', 'sw.js'));
+});
+
 const downloadCache = new Map();
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 
@@ -195,3 +207,4 @@ app.get('/api/check', (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`SocialDL rodando na porta ${PORT}`));
+
