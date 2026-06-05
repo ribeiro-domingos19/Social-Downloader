@@ -22,6 +22,156 @@
       margin-right: 8px;
       vertical-align: middle;
     }
+
+    /* MODAL TUTORIAL */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal.show {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 0;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      border-bottom: 1px solid #eee;
+      background: linear-gradient(135deg, #7037e5, #9f6bff);
+      color: white;
+      border-radius: 15px 15px 0 0;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 28px;
+      cursor: pointer;
+      color: white;
+      padding: 0;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s;
+    }
+
+    .modal-close:hover {
+      transform: rotate(90deg);
+    }
+
+    .modal-body {
+      padding: 20px;
+    }
+
+    .video-container {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 10px;
+    }
+
+    .tutorial-text {
+      color: #333;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+
+    .tutorial-text strong {
+      color: #7037e5;
+    }
+
+    .btn-tutorial {
+      background: linear-gradient(135deg, #7037e5, #9f6bff);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-tutorial:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(112, 55, 229, 0.4);
+    }
+
+    .tutorial-link {
+      color: #7037e5;
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 2px solid #7037e5;
+      transition: 0.2s;
+    }
+
+    .tutorial-link:hover {
+      color: #9f6bff;
+      border-bottom-color: #9f6bff;
+    }
+
+    .about {
+      text-align: center;
+      line-height: 1.8;
+      color: #555;
+      margin-bottom: 20px;
+    }
   </style>
 </head>
 <body>
@@ -91,9 +241,10 @@
 <section id="como-funciona" class="info-section">
   <h2>Sobre o SocialDL</h2>
   <p class="about">
-  O <strong style="color: #7037e5">SocialDL</strong> é a ferramenta definitiva para quem deseja guardar seus momentos favoritos das redes sociais. 
+    O <strong style="color: #7037e5">SocialDL</strong> é a ferramenta definitiva para quem deseja guardar seus momentos favoritos das redes sociais. 
     Com uma interface intuitiva e rápida, você pode baixar vídeos do Facebook, Instagram e TikTok com apenas alguns cliques, 
-    garantindo qualidade e praticidade em qualquer dispositivo.
+    garantindo qualidade e praticidade em qualquer dispositivo. <br><br>
+    <strong>💡 Dica:</strong> <a href="#" onclick="openTutorialModal(); return false;" class="tutorial-link">Instale como app</a> para acessar ainda mais rápido!
   </p>
 
   <h2>Como funciona?</h2>
@@ -102,13 +253,98 @@
     <div class="step"><span>2</span><p>Clique em baixar</p></div>
     <div class="step"><span>3</span><p>Escolha o formato</p></div>
   </div>
+
+  <h2 style="margin-top: 40px;">📱 Instalação como App</h2>
+  <p style="text-align: center; color: #555; margin-bottom: 20px;">
+    Transforme o SocialDL em um app nativo no seu celular! <br>
+    <button class="btn-tutorial" onclick="openTutorialModal()">
+      <i class="bi bi-play-circle"></i> Ver Tutorial de Instalação
+    </button>
+  </p>
 </section>
 
+<!-- MODAL DO TUTORIAL -->
+<div id="tutorialModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>📱 Tutorial: Instalar como App (PWA)</h2>
+      <button class="modal-close" onclick="closeTutorialModal()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <!-- Vídeo Tutorial -->
+      <div class="video-container">
+        <iframe 
+          src="tutorial.mp4" 
+          allowfullscreen 
+          allow="autoplay"
+          title="Tutorial de Instalação PWA">
+        </iframe>
+      </div>
+
+      <!-- Instruções -->
+      <div class="tutorial-text">
+        <h3 style="color: #7037e5; margin-top: 0;">Como Instalar:</h3>
+        <p>
+          <strong>No Android (Chrome):</strong><br>
+          1️⃣ Abra este site no Chrome<br>
+          2️⃣ Clique no menu (⋮) → "Instalar app"<br>
+          3️⃣ Pronto! O app estará na sua tela inicial
+        </p>
+        <p>
+          <strong>No iPhone (Safari):</strong><br>
+          1️⃣ Abra este site no Safari<br>
+          2️⃣ Clique em Compartilhar → "Adicionar à Tela de Início"<br>
+          3️⃣ Pronto! O app estará na sua tela inicial
+        </p>
+      </div>
+
+      <!-- Benefícios -->
+      <div class="tutorial-text">
+        <h3 style="color: #7037e5;">✨ Benefícios do App:</h3>
+        <ul style="margin: 10px 0; padding-left: 20px;">
+          <li>⚡ Acesso mais rápido</li>
+          <li>💾 Funciona offline (interface)</li>
+          <li>🎯 Atalho na tela inicial</li>
+          <li>📲 Sem barra do navegador</li>
+        </ul>
+      </div>
+
+      <!-- Botão Fechar -->
+      <button class="btn-tutorial" style="width: 100%; margin-top: 20px;" onclick="closeTutorialModal()">
+        <i class="bi bi-check-circle"></i> Entendi!
+      </button>
+    </div>
+  </div>
+</div>
+
 <footer class="footer">
-	<p>&copy; 2026 <strong style="color: #7037e5">SocialDL</strong>- Feito com ❤️</p>
+  <p>&copy; 2026 <strong style="color: #7037e5">SocialDL</strong> - Feito com ❤️</p>
 </footer>
 
 <script src="app.js"></script>
+
+<!-- Script do Modal -->
+<script>
+  function openTutorialModal() {
+    const modal = document.getElementById('tutorialModal');
+    modal.classList.add('show');
+  }
+
+  function closeTutorialModal() {
+    const modal = document.getElementById('tutorialModal');
+    modal.classList.remove('show');
+  }
+
+  // Fechar modal ao clicar fora
+  window.onclick = function(event) {
+    const modal = document.getElementById('tutorialModal');
+    if (event.target === modal) {
+      modal.classList.remove('show');
+    }
+  }
+</script>
 
 <!-- Registrar Service Worker para funcionalidade offline -->
 <script>
