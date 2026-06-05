@@ -27,7 +27,7 @@ body {
   font-weight: 700;
   font-size: 18px;
   text-decoration: none;
-  color: #1f1f1f;
+  color: #7037e5;;
 }
 
 /* MENU BUTTON */
@@ -286,30 +286,20 @@ button:focus {
   color: #7037e5;
 }
 
-/* FAQ */
-.faq {
-  padding: 40px 20px;
+p .about{
+  max-width: 600px; 
+  margin: 0 auto 30px auto; 
+  color: #7037e5;
+  line-height: 1.6;
+  font-family: 'poppins';
 }
-
-.faq h2 {
-  text-align: center;
-  font-family: 'Poppins';
-  margin-bottom: 20px;
-}
-
-.faq-item {
-  background: white;
-  margin-bottom: 10px;
-  padding: 15px;
-  border-radius: 10px;
-}
-
 /* FOOTER */
 .footer {
   text-align: center;
   padding: 20px;
   font-size: 14px;
   color: #777;
+  font-family: 'poppins';
 }
 /* Ajuste de Resultado para ocupar toda a largura da section */
 #result-container {

@@ -38,6 +38,16 @@ app.use((req, res, next) => {
   next();
 });
 
+// Forçar o tipo correto para arquivos CSS
+app.use((req, res, next) => {
+    if (req.url.endsWith('.css')) {
+        res.setHeader('Content-Type', 'text/css');
+    }
+    next();
+});
+
+app.use(express.static('public'));
+
 // Agora servir os arquivos estáticos
 app.use(express.static('public'));
 
