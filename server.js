@@ -9,7 +9,7 @@ app.use(express.json());
 
 // ========== SISTEMA DE CONTAGEM DE ACESSOS ==========
 const VISITS_FILE = path.join(__dirname, 'visits.json');
-const ADMIN_SECRET = 'admin-socialdl-secret-key';
+const ADMIN_SECRET = 'admin-view';
 
 // Inicializar arquivo de visitas se não existir
 if (!fs.existsSync(VISITS_FILE)) {
