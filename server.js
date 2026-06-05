@@ -181,16 +181,36 @@ function dispararYtDlp(res, url, name, isAudio = false, noWatermark = false) {
     });
 }
 
-// Rotas API mantidas conforme original...
+// ROTA: THUMBNAIL CORRIGIDA
 app.get('/api/thumbnail', async (req, res) => {
     const { url } = req.query;
     if (!url) return res.status(400).send("URL ausente");
+
+    // Define o Referer correto para evitar erro 403 Forbidden
+    let referer = 'https://www.facebook.com/';
+    if (url.includes('tiktok')) referer = 'https://www.tiktok.com/';
+    if (url.includes('instagram')) referer = 'https://www.instagram.com/';
+
     try {
-        const response = await axios({ method: 'get', url, responseType: 'stream', headers: { 'User-Agent': UA } });
+        const response = await axios({
+            method: 'get', 
+            url, 
+            responseType: 'stream',
+            headers: { 
+                'User-Agent': UA, 
+                'Referer': referer 
+            }
+        });
         res.setHeader('Content-Type', 'image/jpeg');
         response.data.pipe(res);
-    } catch (error) { res.status(500).send("Erro thumbnail"); }
+    } catch (error) {
+        // Log para ajudar a identificar o erro no painel do Render
+        console.error("Erro na thumbnail:", error.message);
+        res.status(500).send("Erro thumbnail");
+    }
 });
+
+/* Termina aqui */
 
 app.get('/api/proxy-download', async (req, res) => {
     const { url, name } = req.query;
