@@ -1,0 +1,11 @@
+{
+  "totalVisits": 1,
+  "visits": [
+    {
+      "timestamp": "2026-06-05T11:21:48.435Z",
+      "ip": "::1",
+      "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Mobile Safari/537.36",
+      "path": "/"
+    }
+  ]
+}

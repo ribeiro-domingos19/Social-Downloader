@@ -6,7 +6,116 @@ const path = require('path');
 const app = express();
 
 app.use(express.json());
+
+// ========== SISTEMA DE CONTAGEM DE ACESSOS ==========
+const VISITS_FILE = path.join(__dirname, 'visits.json');
+const ADMIN_SECRET = 'admin-socialdl-secret-key';
+
+// Inicializar arquivo de visitas se não existir
+if (!fs.existsSync(VISITS_FILE)) {
+  fs.writeFileSync(VISITS_FILE, JSON.stringify({ totalVisits: 0, visits: [] }));
+  console.log('Arquivo visits.json criado');
+}
+
+// MIDDLEWARE DE CONTAGEM - VEM ANTES de servir arquivos estáticos!
+app.use((req, res, next) => {
+  if (req.path === '/' || req.path === '/index.html') {
+    try {
+      const visitsData = JSON.parse(fs.readFileSync(VISITS_FILE, 'utf8'));
+      visitsData.totalVisits += 1;
+      visitsData.visits.push({
+        timestamp: new Date().toISOString(),
+        ip: req.ip || req.connection.remoteAddress || 'desconhecido',
+        userAgent: req.get('user-agent') || 'desconhecido',
+        path: req.path
+      });
+      fs.writeFileSync(VISITS_FILE, JSON.stringify(visitsData, null, 2));
+      console.log(`✓ Acesso registrado! Total: ${visitsData.totalVisits}`);
+    } catch (err) {
+      console.log('Erro ao registrar visita:', err.message);
+    }
+  }
+  next();
+});
+
+// Agora servir os arquivos estáticos
 app.use(express.static('public'));
+
+// Painel secreto de estatísticas
+app.get(`/${ADMIN_SECRET}`, (req, res) => {
+  try {
+    const visitsData = JSON.parse(fs.readFileSync(VISITS_FILE, 'utf8'));
+    const html = `
+    <!DOCTYPE html>
+    <html lang="pt-br">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>SocialDL - Estatísticas</title>
+      <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #f5f3ff, #e9e4ff); min-height: 100vh; padding: 40px 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 { color: #7037e5; font-size: 28px; margin-bottom: 10px; }
+        .header p { color: #666; }
+        .stats-box { background: white; border-radius: 15px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        .stat { text-align: center; padding: 20px; }
+        .stat-number { font-size: 48px; font-weight: 700; color: #7037e5; }
+        .stat-label { font-size: 16px; color: #666; margin-top: 10px; }
+        .visits-list { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-height: 500px; overflow-y: auto; }
+        .visit-item { padding: 15px; border-bottom: 1px solid #eee; font-size: 13px; color: #666; }
+        .visit-item:last-child { border-bottom: none; }
+        .visit-time { color: #7037e5; font-weight: 600; }
+        .reset-btn { background: #ef4444; color: white; border: none; padding: 12px 24px; border-radius: 10px; cursor: pointer; margin-top: 20px; font-weight: 600; }
+        .reset-btn:hover { background: #dc2626; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>📊 Estatísticas do SocialDL</h1>
+          <p>Painel secreto - Não compartilhe esta URL!</p>
+        </div>
+        
+        <div class="stats-box">
+          <div class="stat">
+            <div class="stat-number">${visitsData.totalVisits}</div>
+            <div class="stat-label">Total de Acessos</div>
+          </div>
+        </div>
+
+        <div class="visits-list">
+          <h3 style="padding: 0 0 15px 0; color: #7037e5;">Últimos 50 Acessos:</h3>
+          ${visitsData.visits.slice(-50).reverse().map(v => `
+            <div class="visit-item">
+              <span class="visit-time">${new Date(v.timestamp).toLocaleString('pt-BR')}</span> - IP: ${v.ip}
+            </div>
+          `).join('')}
+        </div>
+
+        <button class="reset-btn" onclick="if(confirm('Tem certeza que quer resetar as estatísticas?')) { fetch('/${ADMIN_SECRET}/reset', {method: 'POST'}).then(() => location.reload()); }">Resetar Estatísticas</button>
+      </div>
+    </body>
+    </html>
+    `;
+    res.send(html);
+  } catch (err) {
+    res.status(500).send('Erro ao carregar estatísticas: ' + err.message);
+  }
+});
+
+// Reset das estatísticas
+app.post(`/${ADMIN_SECRET}/reset`, (req, res) => {
+  try {
+    fs.writeFileSync(VISITS_FILE, JSON.stringify({ totalVisits: 0, visits: [] }));
+    console.log('Estatísticas resetadas');
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+// ========== FIM DO SISTEMA DE CONTAGEM ==========
 
 // Servir manifest.json com content-type correto
 app.get('/manifest.json', (req, res) => {
