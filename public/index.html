@@ -51,9 +51,9 @@
       background: white;
       padding: 0;
       border-radius: 15px;
-      width: 90%;
-      max-width: 600px;
-      max-height: 80vh;
+      width: 98%;
+      max-width: 1200px;
+      max-height: 90vh;
       overflow-y: auto;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
       animation: slideUp 0.3s ease;
@@ -68,7 +68,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 20px;
+      padding: 25px 30px;
       border-bottom: 1px solid #eee;
       background: linear-gradient(135deg, #7037e5, #9f6bff);
       color: white;
@@ -77,26 +77,28 @@
 
     .modal-header h2 {
       margin: 0;
-      font-size: 20px;
+      font-size: 26px;
     }
 
     .modal-close {
       background: none;
       border: none;
-      font-size: 28px;
+      font-size: 36px;
       cursor: pointer;
       color: white;
       padding: 0;
-      width: 40px;
-      height: 40px;
+      width: 50px;
+      height: 50px;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: 0.2s;
+      border-radius: 50%;
     }
 
     .modal-close:hover {
       transform: rotate(90deg);
+      background-color: rgba(255, 255, 255, 0.15);
     }
 
     .modal-body {
@@ -110,7 +112,38 @@
       height: 0;
       overflow: hidden;
       border-radius: 10px;
-      margin-bottom: 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .video-wrapper {
+      position: relative;
+      margin-bottom: 15px;
+    }
+
+    .btn-expand-video {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(112, 55, 229, 0.9);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.3s;
+      z-index: 10;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-expand-video:hover {
+      background: #7037e5;
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(112, 55, 229, 0.4);
     }
 
     .video-container iframe {
@@ -125,8 +158,9 @@
 
     .tutorial-text {
       color: #333;
-      line-height: 1.6;
-      margin-bottom: 15px;
+      line-height: 1.4;
+      margin-bottom: 10px;
+      font-size: 14px;
     }
 
     .tutorial-text strong {
@@ -137,10 +171,11 @@
       background: linear-gradient(135deg, #7037e5, #9f6bff);
       color: white;
       border: none;
-      padding: 10px 20px;
+      padding: 14px 28px;
       border-radius: 8px;
       cursor: pointer;
       font-weight: 600;
+      font-size: 16px;
       transition: 0.3s;
       display: inline-flex;
       align-items: center;
@@ -185,6 +220,7 @@
   <ul>
     <li><a href="#">Início</a></li>
     <li><a href="#como-funciona">Como funciona</a></li>
+    <li><a href="#" onclick="openTutorialModal(); return false;">Ver Instalação</a></li>
   </ul>
 </nav>
 
@@ -254,13 +290,6 @@
     <div class="step"><span>3</span><p>Escolha o formato</p></div>
   </div>
 
-  <h2 style="margin-top: 40px;">📱 Instalação como App</h2>
-  <p style="text-align: center; color: #555; margin-bottom: 20px;">
-    Transforme o SocialDL em um app nativo no seu celular! <br>
-    <button class="btn-tutorial" onclick="openTutorialModal()">
-      <i class="bi bi-play-circle"></i> Ver Tutorial de Instalação
-    </button>
-  </p>
 </section>
 
 <!-- MODAL DO TUTORIAL -->
@@ -273,46 +302,29 @@
       </button>
     </div>
     <div class="modal-body">
-      <!-- Vídeo Tutorial -->
-      <div class="video-container">
-        <iframe 
-          src="tutorial.mp4" 
-          allowfullscreen 
-          allow="autoplay"
-          title="Tutorial de Instalação PWA">
-        </iframe>
+      <!-- Vídeo Tutorial com Botão Expandir -->
+      <div class="video-wrapper">
+        <div class="video-container">
+          <iframe 
+            id="tutorialVideo"
+            src="tutorial.mp4" 
+            allowfullscreen 
+            allow="autoplay"
+            title="Tutorial de Instalação PWA">
+          </iframe>
+        </div>
+        <button class="btn-expand-video" onclick="expandVideoFullscreen()" title="Expandir vídeo em tela cheia">
+          <i class="bi bi-fullscreen"></i>
+        </button>
       </div>
 
-      <!-- Instruções -->
-      <div class="tutorial-text">
-        <h3 style="color: #7037e5; margin-top: 0;">Como Instalar:</h3>
-        <p>
-          <strong>No Android (Chrome):</strong><br>
-          1️⃣ Abra este site no Chrome<br>
-          2️⃣ Clique no menu (⋮) → "Instalar app"<br>
-          3️⃣ Pronto! O app estará na sua tela inicial
-        </p>
-        <p>
-          <strong>No iPhone (Safari):</strong><br>
-          1️⃣ Abra este site no Safari<br>
-          2️⃣ Clique em Compartilhar → "Adicionar à Tela de Início"<br>
-          3️⃣ Pronto! O app estará na sua tela inicial
-        </p>
-      </div>
-
-      <!-- Benefícios -->
-      <div class="tutorial-text">
-        <h3 style="color: #7037e5;">✨ Benefícios do App:</h3>
-        <ul style="margin: 10px 0; padding-left: 20px;">
-          <li>⚡ Acesso mais rápido</li>
-          <li>💾 Funciona offline (interface)</li>
-          <li>🎯 Atalho na tela inicial</li>
-          <li>📲 Sem barra do navegador</li>
-        </ul>
+      <!-- Instrução Breve -->
+      <div class="tutorial-text" style="text-align: center; margin-bottom: 20px;">
+        <p><strong>Android:</strong> Menu (⋮) → "Instalar app" | <strong>iPhone:</strong> Compartilhar → "Adicionar à Tela"</p>
       </div>
 
       <!-- Botão Fechar -->
-      <button class="btn-tutorial" style="width: 100%; margin-top: 20px;" onclick="closeTutorialModal()">
+      <button class="btn-tutorial" style="width: 100%; margin-top: 10px;" onclick="closeTutorialModal()">
         <i class="bi bi-check-circle"></i> Entendi!
       </button>
     </div>
@@ -335,6 +347,19 @@
   function closeTutorialModal() {
     const modal = document.getElementById('tutorialModal');
     modal.classList.remove('show');
+  }
+
+  function expandVideoFullscreen() {
+    const video = document.getElementById('tutorialVideo');
+    if (video.requestFullscreen) {
+      video.requestFullscreen();
+    } else if (video.webkitRequestFullscreen) { // Safari
+      video.webkitRequestFullscreen();
+    } else if (video.mozRequestFullScreen) { // Firefox
+      video.mozRequestFullScreen();
+    } else if (video.msRequestFullscreen) { // IE11
+      video.msRequestFullscreen();
+    }
   }
 
   // Fechar modal ao clicar fora
@@ -372,4 +397,5 @@
 
 </body>
 </html>
+
 
