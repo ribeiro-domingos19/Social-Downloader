@@ -26,8 +26,7 @@
 - 📲 **Funciona Offline** - Interface disponível sem conexão
 - 🎨 **PWA Instalável** - Instale como app nativo no celular
 - 🔒 **Seguro** - Nenhum dado armazenado no servidor
-- 📱 **Compatível** - Android, iOS, Windows, Mac e Linux
-
+- 📱 **Compatível** - Qualuer navegador
 ---
 
 ## 🚀 Como Acessar
@@ -136,35 +135,12 @@ Social-Downloader/
 
 ## 🚀 Deploy
 
-### Deploy Automático (Recomendado)
-
 Este projeto está configurado para deploy automático no Render:
-
-```bash
-# 1. Edite o código
-nano public/index.html
-
-# 2. Commit suas mudanças
-git add .
-git commit -m "sua mensagem"
-
-# 3. Deploy automático com script
-node deploy-render-auto.js
-```
 
 O script automaticamente:
 - ✅ Faz git push
 - ✅ Aguarda sincronização
 - ✅ Inicia deploy na Render
-
-### Deploy Manual
-
-```bash
-# Apenas git push
-git push origin main
-
-# Render detectará e fará deploy automaticamente
-```
 
 ---
 
@@ -216,7 +192,7 @@ git star ribeiro-domingos19/Social-Downloader
 
 Encontrou algum problema?
 
-- 📧 **Email**: [contato@socialdl.com](mailto:contato@socialdl.com)
+- 📧 **Email**: [domingosrebelo494@gmail.com](mailto:domingosrebelo494@gmail.com)
 - 🐛 **Reportar Bug**: [GitHub Issues](https://github.com/ribeiro-domingos19/Social-Downloader/issues)
 - 💬 **Discussões**: [GitHub Discussions](https://github.com/ribeiro-domingos19/Social-Downloader/discussions)
 
