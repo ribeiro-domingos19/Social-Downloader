@@ -3,6 +3,7 @@
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 
 // Cores para terminal
 const colors = {
@@ -12,12 +13,18 @@ const colors = {
   red: '\x1b[31m',
   yellow: '\x1b[33m',
   blue: '\x1b[34m',
-  cyan: '\x1b[36m'
+  cyan: '\x1b[36m',
+  magenta: '\x1b[35m'
 };
 
 // Função para colorir texto
 function log(color, text) {
   console.log(`${colors[color]}${text}${colors.reset}`);
+}
+
+// Função para aguardar
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 // Carrega arquivo .env
@@ -38,9 +45,59 @@ function loadEnv() {
   return env;
 }
 
+// Função para fazer git push
+function gitPush() {
+  log('cyan', '\n📤 Fazendo git push...\n');
+
+  try {
+    // Verifica se tem mudanças
+    const status = execSync('git status --porcelain', { encoding: 'utf-8' });
+    
+    if (status.trim()) {
+      log('yellow', '⚠️  Mudanças detectadas, commitando...\n');
+      
+      // Se tem mudanças, precisa fazer commit
+      log('red', '❌ Erro: Você tem mudanças não commitadas!\n');
+      log('yellow', 'Execute antes:\n');
+      console.log('   git add .');
+      console.log('   git commit -m "sua mensagem"\n');
+      return false;
+    }
+
+    // Faz o push
+    const result = execSync('git push origin main', { encoding: 'utf-8' });
+    log('green', '✅ Git push realizado com sucesso!\n');
+    
+    // Mostra resultado
+    if (result.includes('up to date') || result.includes('Everything up-to-date')) {
+      log('blue', '📌 Seu código já estava sincronizado com o GitHub.\n');
+    } else {
+      log('green', '📌 Mudanças enviadas para o GitHub!\n');
+    }
+    
+    return true;
+  } catch (error) {
+    log('red', `❌ Erro ao fazer git push: ${error.message}\n`);
+    return false;
+  }
+}
+
+// Função para aguardar com visualização
+async function waitWithProgress(seconds) {
+  log('magenta', `⏳ Aguardando ${seconds}s para GitHub sincronizar com Render...\n`);
+  
+  for (let i = seconds; i > 0; i--) {
+    process.stdout.write(`   ${i}s... `);
+    await sleep(1000);
+    process.stdout.write('\r');
+  }
+  
+  console.log('   ✅ Pronto!\n');
+}
+
 // Função principal de deploy
 async function deploy() {
-  log('cyan', '\n🚀 Iniciando Deploy na Render...\n');
+  log('cyan', '\n🚀 Iniciando Deploy Automático na Render...\n');
 
   // Carrega variáveis
   const envVars = loadEnv();
@@ -61,15 +118,26 @@ async function deploy() {
     console.log('   RENDER_TOKEN=seu-token-aqui');
     console.log('   RENDER_SERVICE_ID=seu-service-id-aqui\n');
 
-    log('bright', '3️⃣  Onde encontrar seus dados:');
-    console.log('   Token: https://dashboard.render.com/api-tokens');
-    console.log('   Service ID: Dashboard → seu serviço → Settings\n');
-
     process.exit(1);
   }
 
   log('green', '✅ Credenciais carregadas com sucesso!');
   log('blue', `📌 Service ID: ${SERVICE_ID.substring(0, 10)}...`);
+
+  // PASSO 1: Git Push
+  log('bright', '\n━━━ PASSO 1: Git Push ━━━');
+  const pushSuccess = gitPush();
+  
+  if (!pushSuccess) {
+    process.exit(1);
+  }
+
+  // PASSO 2: Aguarda sincronização
+  log('bright', '\n━━━ PASSO 2: Aguardando Sincronização ━━━');
+  await waitWithProgress(10);
+
+  // PASSO 3: Deploy na Render
+  log('bright', '\n━━━ PASSO 3: Deploy na Render ━━━\n');
 
   // Faz requisição ao Render
   const options = {
@@ -132,14 +200,15 @@ async function deploy() {
   });
 }
 
-// Executa
-deploy()
-  .then(() => {
-    log('green', '✨ Deploy finalizando...\n');
+// Executa tudo
+(async () => {
+  try {
+    await deploy();
+    log('green', '✨ Deploy finalizado com sucesso!\n');
     process.exit(0);
-  })
-  .catch((err) => {
+  } catch (err) {
     log('red', `\n💥 Falha no deploy: ${err.message}\n`);
     process.exit(1);
-  });
+  }
+})();
 
